@@ -1,0 +1,34 @@
+package com.projectC.api.application.user;
+
+import com.projectC.api.domain.repository.UserRepository;
+import com.projectC.api.infrastructure.security.JwtService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+@Component
+public class LoginUseCase {
+
+    private final UserRepository repository;
+    private final PasswordEncoder encoder;
+    private final JwtService jwtService;
+
+    public LoginUseCase(UserRepository repository,
+                        PasswordEncoder encoder,
+                        JwtService jwtService) {
+        this.repository = repository;
+        this.encoder = encoder;
+        this.jwtService = jwtService;
+    }
+
+    public String execute(String email, String password) {
+
+        var user = repository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        if (!encoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Senha inválida");
+        }
+
+        return jwtService.generateToken(user);
+    }
+}
