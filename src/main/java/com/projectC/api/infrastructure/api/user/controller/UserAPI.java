@@ -7,6 +7,7 @@ import com.projectC.api.infrastructure.api.user.model.request.ChangeProfilePictu
 import com.projectC.api.infrastructure.api.common.PageResponse;
 import com.projectC.api.infrastructure.api.user.model.response.FollowerResponse;
 import com.projectC.api.infrastructure.api.user.model.response.FollowingResponse;
+import com.projectC.api.infrastructure.api.user.model.response.UserMeResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,6 +23,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "Usuários", description = "Endpoints de gerenciamento de usuário")
 public interface UserAPI {
+
+    @Operation(summary = "Dados do usuário logado", security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Dados do usuário autenticado"),
+            @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content)
+    })
+    ResponseEntity<UserMeResponse> getMe(@AuthenticationPrincipal User user);
 
     @Operation(summary = "Alterar senha", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses({

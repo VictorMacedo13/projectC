@@ -15,6 +15,7 @@ import com.projectC.api.infrastructure.api.user.model.request.ChangeProfilePictu
 import com.projectC.api.infrastructure.api.common.PageResponse;
 import com.projectC.api.infrastructure.api.user.model.response.FollowerResponse;
 import com.projectC.api.infrastructure.api.user.model.response.FollowingResponse;
+import com.projectC.api.infrastructure.api.user.model.response.UserMeResponse;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -52,6 +53,12 @@ public class UserController implements UserAPI {
         this.unfollowUserUseCase = unfollowUserUseCase;
         this.getFollowersUseCase = getFollowersUseCase;
         this.getFollowingUseCase = getFollowingUseCase;
+    }
+
+    @GetMapping("/me")
+    @Override
+    public ResponseEntity<UserMeResponse> getMe(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(UserMeResponse.from(user));
     }
 
     @PatchMapping("/me/password")
